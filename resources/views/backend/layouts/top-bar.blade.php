@@ -1,3 +1,8 @@
+@php
+    // A missing/renamed avatar must never render a broken image.
+    $avatarFilename = basename((string) ($admin?->avatar ?? ''));
+    $adminAvatar = \App\Support\WebsiteMedia::url('media/admin/' . $avatarFilename, 'media/admin/default.png');
+@endphp
 <div class="header">
     <!-- navbar -->
     <nav class="navbar-default navbar navbar-expand-lg">
@@ -86,7 +91,7 @@
                     <a class="rounded-circle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <div class="avatar avatar-md avatar-indicators avatar-online">
-                            <img alt="avatar" src="{{ asset('/media/admin') . '/' . $admin->avatar }}"
+                            <img alt="avatar" src="{{ $adminAvatar }}"
                                 class="rounded-circle">
                         </div>
                     </a>
@@ -94,12 +99,12 @@
                         <div class="dropdown-item">
                             <div class="d-flex">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
-                                    <img alt="avatar" src="{{ asset('/media/admin') . '/' . $admin->avatar }}"
+                                    <img alt="avatar" src="{{ $adminAvatar }}"
                                         class="rounded-circle">
                                 </div>
                                 <div class="ms-3 lh-1">
-                                    <h5 class="mb-1">{{ $admin->name }}</h5>
-                                    <p class="mb-0 text-muted">{{ $admin->email }}</p>
+                                    <h5 class="mb-1">{{ $admin?->name ?? 'Administrator' }}</h5>
+                                    <p class="mb-0 text-muted">{{ $admin?->email ?? '' }}</p>
                                 </div>
                             </div>
                         </div>

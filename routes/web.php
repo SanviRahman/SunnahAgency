@@ -5,6 +5,16 @@ use App\Http\Controllers\Backend\AdminAdminController;
 use App\Http\Controllers\Backend\AdminApplyCourseController;
 use App\Http\Controllers\Backend\AdminAppreanceController;
 use App\Http\Controllers\Backend\AdminBannerController;
+use App\Http\Controllers\Backend\HomepageHeroController;
+use App\Http\Controllers\Backend\HomepageSpotlightController;
+use App\Http\Controllers\Backend\HomepageServicesController;
+use App\Http\Controllers\Backend\HomepageConsultationController;
+use App\Http\Controllers\Backend\HomepageRatingsController;
+use App\Http\Controllers\Backend\HomepageBenefitsController;
+use App\Http\Controllers\Backend\HomepageClientsController;
+use App\Http\Controllers\Backend\HomepageTestimonialsController;
+use App\Http\Controllers\Backend\HomepageGalleryController;
+use App\Http\Controllers\Frontend\ConsultationController;
 use App\Http\Controllers\Backend\AdminBlogsController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\AdminCountryController;
@@ -57,6 +67,9 @@ use Illuminate\Support\Facades\Route;
 #=====>[AppUpNext]===>=>{ARI}===>(HomeController)==> # [{( START )}] <== FRONTEND ==>
 #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
 Route::get('/', [HomeController::class, 'home_Index'])->name('home_Index');
+
+// Step-04: Public consultation (web CSRF + rate limit).
+Route::post('/consultations', [ConsultationController::class, 'store'])->middleware('throttle:5,10')->name('consultations.store');
 #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
 #=====>[AppUpNext]===>=>{ARI}===>(HomeController)==> # [{( END )}] <== FRONTEND ==>
 #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
@@ -216,6 +229,89 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     Route::group(['prefix' => 'dashboard', 'middleware' => 'admin'], function () {
+        // Step-09: public photo mosaic, private CRUD; reuse abouts with gallery role.
+        Route::prefix('homepage/gallery')->name('admin.gallery.')->group(function () {
+            Route::get('/', [HomepageGalleryController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageGalleryController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/photos', [HomepageGalleryController::class, 'store'])->name('items.store');
+            Route::put('/photos/{item}', [HomepageGalleryController::class, 'update'])->name('items.update');
+            Route::delete('/photos/{item}', [HomepageGalleryController::class, 'destroy'])->name('items.destroy');
+        });
+
+        // Step-08: Admin-guarded client video testimonials on existing client_reviews.
+        Route::prefix('homepage/testimonials')->name('admin.testimonials.')->group(function () {
+            Route::get('/', [HomepageTestimonialsController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageTestimonialsController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/videos', [HomepageTestimonialsController::class, 'store'])->name('videos.store');
+            Route::put('/videos/{review}', [HomepageTestimonialsController::class, 'update'])->name('videos.update');
+            Route::delete('/videos/{review}', [HomepageTestimonialsController::class, 'destroy'])->name('videos.destroy');
+        });
+
+        // Step-07: client showcase reuses abouts; authorized client logos only.
+        Route::prefix('homepage/clients')->name('admin.clients.')->group(function () {
+            Route::get('/', [HomepageClientsController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageClientsController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/logos', [HomepageClientsController::class, 'store'])->name('logos.store');
+            Route::put('/logos/{client}', [HomepageClientsController::class, 'update'])->name('logos.update');
+            Route::delete('/logos/{client}', [HomepageClientsController::class, 'destroy'])->name('logos.destroy');
+        });
+
+        // Step-06: Homepage Benefits, safely stored in existing abouts records.
+        Route::prefix('homepage/benefits')->name('admin.benefits.')->group(function () {
+            Route::get('/', [HomepageBenefitsController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageBenefitsController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/items', [HomepageBenefitsController::class, 'store'])->name('items.store');
+            Route::put('/items/{benefit}', [HomepageBenefitsController::class, 'update'])->name('items.update');
+            Route::delete('/items/{benefit}', [HomepageBenefitsController::class, 'destroy'])->name('items.destroy');
+        });
+
+        // Step-05: approved review platforms; inherited existing admin guard.
+        Route::prefix('homepage/ratings')->name('admin.ratings.')->group(function () {
+            Route::get('/', [HomepageRatingsController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageRatingsController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/platforms', [HomepageRatingsController::class, 'store'])->name('platforms.store');
+            Route::put('/platforms/{platform}', [HomepageRatingsController::class, 'update'])->name('platforms.update');
+            Route::delete('/platforms/{platform}', [HomepageRatingsController::class, 'destroy'])->name('platforms.destroy');
+        });
+
+        // Step-04: Admin-only consultation settings/inbox.
+        Route::prefix('homepage/consultation')->name('admin.consultation.')->group(function () {
+            Route::get('/', [HomepageConsultationController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageConsultationController::class, 'updateSettings'])->name('settings.update');
+            Route::get('/requests/{consultation}', [HomepageConsultationController::class, 'show'])->name('requests.show');
+            Route::put('/requests/{consultation}', [HomepageConsultationController::class, 'updateLead'])->name('requests.update');
+        });
+
+        // Step-03 — isolated Homepage Services settings/curation; existing Service CRUD preserved.
+        Route::prefix('homepage/services')->name('admin.services.')->group(function () {
+            Route::get('/', [HomepageServicesController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageServicesController::class, 'updateSettings'])->name('settings.update');
+            Route::put('/featured', [HomepageServicesController::class, 'updateFeatured'])->name('featured.update');
+        });
+
+        // Spotlight management — admin guard inherited from existing dashboard group.
+        Route::prefix('homepage/spotlight')->name('admin.spotlight.')->group(function () {
+            Route::get('/', [HomepageSpotlightController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageSpotlightController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/videos', [HomepageSpotlightController::class, 'storeVideo'])->name('videos.store');
+            Route::put('/videos/{video}', [HomepageSpotlightController::class, 'updateVideo'])->name('videos.update');
+            Route::delete('/videos/{video}', [HomepageSpotlightController::class, 'deleteVideo'])->name('videos.destroy');
+            Route::post('/mentions', [HomepageSpotlightController::class, 'storeMention'])->name('mentions.store');
+            Route::put('/mentions/{mention}', [HomepageSpotlightController::class, 'updateMention'])->name('mentions.update');
+            Route::delete('/mentions/{mention}', [HomepageSpotlightController::class, 'deleteMention'])->name('mentions.destroy');
+        });
+
+        // Hero management only. All writes use POST/PUT/DELETE + CSRF, never GET.
+        Route::prefix('homepage/hero')->name('admin.hero.')->group(function () {
+            Route::get('/', [HomepageHeroController::class, 'index'])->name('index');
+            Route::put('/settings', [HomepageHeroController::class, 'updateSettings'])->name('settings.update');
+            Route::post('/slides', [HomepageHeroController::class, 'storeSlide'])->name('slides.store');
+            Route::put('/slides/{slide}', [HomepageHeroController::class, 'updateSlide'])->name('slides.update');
+            Route::delete('/slides/{slide}', [HomepageHeroController::class, 'deleteSlide'])->name('slides.destroy');
+            Route::post('/highlights', [HomepageHeroController::class, 'storeHighlight'])->name('highlights.store');
+            Route::put('/highlights/{highlight}', [HomepageHeroController::class, 'updateHighlight'])->name('highlights.update');
+            Route::delete('/highlights/{highlight}', [HomepageHeroController::class, 'deleteHighlight'])->name('highlights.destroy');
+        });
         #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
         #=====>[AppUpNext]===>=>{ARI}===>(DashboardController)==> # [{( START )}] <== BACKEND ==>
         #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>

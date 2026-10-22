@@ -1,11 +1,6 @@
 <!--Footer Section Start-->
-<section class="footer-section bg-white">
-    <div class="shape">
-        <img src="{{ asset('frontend') }}/assets/images/vector/s-vector.png" alt="shape">
-    </div>
-    <div class="shape2">
-        <img src="{{ asset('frontend') }}/assets/images/vector/s-vector.png" alt="shape">
-    </div>
+<section class="footer-section sda-footer-dark">
+    {{-- Decorative dotted corner graphics intentionally removed. --}}
     <div class="container">
         <div class="footer-top pt-120 pb-80">
             <div class="row g-4">

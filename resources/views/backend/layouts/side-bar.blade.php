@@ -2,7 +2,7 @@
     <div class="vh-100" data-simplebar>
         <!-- Brand logo -->
         <a class="navbar-brand" href="{{ route('backend_Home_Index') }}">
-            <img style="height: 40px" src="{{ asset('/media/logo') . '/' . $logo->frontlogo }}" alt="">
+            <img style="height: 40px" src="{{ \App\Support\WebsiteMedia::url('media/logo/' . ($logo->frontlogo ?? 'frontlogo.png')) }}" alt="">
         </a>
         <!-- Navbar nav -->
         <ul class="navbar-nav flex-column" id="sideNavbar">
@@ -53,6 +53,91 @@
                     <i class="fa-solid fa-user-gear me-2"></i>
                     Course Apply
                 </a>
+            </li>
+            {{-- Homepage-only management pages: grouped without changing their existing routes. --}}
+            @php
+                $isHomeManagementPage = request()->routeIs(
+                    'admin.hero.*',
+                    'admin.spotlight.*',
+                    'admin.services.*',
+                    'admin.consultation.*',
+                    'admin.ratings.*',
+                    'admin.benefits.*',
+                    'admin.clients.*',
+                    'admin.testimonials.*',
+                    'admin.gallery.*'
+                );
+            @endphp
+            <li class="nav-item hm-sidebar-group">
+                <a class="nav-link text-dark hm-sidebar-toggle {{ $isHomeManagementPage ? 'hm-sidebar-current' : 'collapsed' }}"
+                   href="#homeManagementSubmenu"
+                   role="button"
+                   data-bs-toggle="collapse"
+                   aria-expanded="{{ $isHomeManagementPage ? 'true' : 'false' }}"
+                   aria-controls="homeManagementSubmenu">
+                    <i class="fa-solid fa-house-laptop me-2" aria-hidden="true"></i>
+                    <span>Home Management</span>
+                    <i class="fa-solid fa-chevron-down hm-sidebar-arrow ms-auto" aria-hidden="true"></i>
+                </a>
+                <div id="homeManagementSubmenu"
+                     class="collapse {{ $isHomeManagementPage ? 'show' : '' }} hm-sidebar-panel">
+                    <ul class="nav flex-column" aria-label="Home Management Pages">
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.hero.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.hero.index') }}">
+                                <i class="fa-solid fa-images me-2"></i> Hero Slides
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.spotlight.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.spotlight.index') }}">
+                                <i class="fa-solid fa-film me-2"></i> Spotlight
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.services.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.services.index') }}">
+                                <i class="fa-solid fa-layer-group me-2"></i> Services
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.consultation.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.consultation.index') }}">
+                                <i class="fa-solid fa-comments me-2"></i> Free Consultation
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.ratings.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.ratings.index') }}">
+                                <i class="fa-solid fa-star me-2"></i> Client Ratings
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.benefits.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.benefits.index') }}">
+                                <i class="fa-solid fa-circle-check me-2"></i> Why Choose Us / Benefits
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.clients.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.clients.index') }}">
+                                <i class="fa-solid fa-handshake me-2"></i> Our Clients
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.testimonials.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.testimonials.index') }}">
+                                <i class="fa-solid fa-video me-2"></i> Video Testimonials
+                            </a>
+                        </li>
+                        <li class="border nav-item">
+                            <a class="nav-link text-dark {{ request()->routeIs('admin.gallery.*') ? 'active_menu' : '' }}"
+                            href="{{ route('admin.gallery.index') }}">
+                                <i class="fa-solid fa-camera-retro me-2"></i> Memories &amp; Moments
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item bg-dark">
                 <div style="font-size: 10px" class="text-white navbar-heading">Service INFO</div>

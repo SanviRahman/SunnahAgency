@@ -15,6 +15,14 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+// Hostinger's existing deployment uses public_html itself as the web root.
+// Laravel otherwise defaults to public_html/public, so media uploads were
+// saved somewhere the browser cannot access. Conventional installs unchanged.
+if (is_file($app->basePath('index.php')) && (is_dir($app->basePath('media')) || is_dir($app->basePath('frontend')))) {
+    $app->usePublicPath($app->basePath());
+}
+
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
