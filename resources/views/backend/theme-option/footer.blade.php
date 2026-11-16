@@ -36,7 +36,7 @@
                     @endif
 
                     <div class="py-4 px-2 rounded-3">
-                        <form action="{{ route('backend_Settings_Footer_Update') }}" method="POST">
+                        <form action="{{ Route::has('backend_Settings_Footer_Update') ? route('backend_Settings_Footer_Update') : url('admin/dashboard/settings/theme-options/footer/update') }}" method="POST">
                             @csrf
                             
                             <!-- Say Hello Contact Info -->
