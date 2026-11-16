@@ -660,6 +660,9 @@ Route::group(['prefix' => 'admin'], function () {
             Route::group(['prefix' => 'theme-options'], function () {
                 Route::get('/', [AdminAppreanceController::class, 'backend_Settings_Logo'])->name('backend_Settings_Logo');
                 Route::post('/update', [AdminAppreanceController::class, 'backend_Settings_Logo_Update'])->name('backend_Settings_Logo_Update');
+                Route::get('/header', [AdminAppreanceController::class, 'backend_Settings_Header'])->name('backend_Settings_Header');
+                Route::get('/footer', [AdminAppreanceController::class, 'backend_Settings_Footer'])->name('backend_Settings_Footer');
+                Route::post('/footer/update', [AdminAppreanceController::class, 'backend_Settings_Footer_Update'])->name('backend_Settings_Footer_Update');
             });
             #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
             #=====>[AppUpNext]===>=>{ARI}===>( AdminAppreanceController )==> # [{( END )}] <== BACKEND ==>

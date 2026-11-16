@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use App\Models\Logo;
+use App\Models\WebsiteInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -18,6 +19,55 @@ class AdminAppreanceController extends Controller
         return view('backend.theme-option.logo', compact(
             'logo',
         ));
+    }
+
+    public function backend_Settings_Header()
+    {
+        $logo = Logo::first();
+        $websiteinfo = WebsiteInfo::first();
+        return view('backend.theme-option.header', compact(
+            'logo',
+            'websiteinfo',
+        ));
+    }
+
+    public function backend_Settings_Footer()
+    {
+        $logo = Logo::first();
+        $websiteinfo = WebsiteInfo::first();
+        return view('backend.theme-option.footer', compact(
+            'logo',
+            'websiteinfo',
+        ));
+    }
+
+    public function backend_Settings_Footer_Update(Request $request)
+    {
+        try {
+            $websiteinfo = WebsiteInfo::first();
+            if (!$websiteinfo) {
+                $websiteinfo = new WebsiteInfo();
+            }
+
+            $websiteinfo->update([
+                'address' => $request->address,
+                'email' => $request->email,
+                'number' => $request->number,
+                'wattsup_number' => $request->wattsup_number,
+                'facebook' => $request->facebook,
+                'instagram' => $request->instagram,
+                'twitter' => $request->twitter,
+                'linkdin' => $request->linkdin,
+                'radit' => $request->radit,
+                'tiktok' => $request->tiktok,
+                'pintarest' => $request->pintarest,
+                'sort_descroption' => $request->sort_descroption,
+            ]);
+
+            return redirect()->back()->with('success', 'Footer Information Updated Successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
 
     public function backend_Settings_Logo_Update(Request $request)
