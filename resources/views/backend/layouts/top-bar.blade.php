@@ -1,7 +1,9 @@
 @php
+    $admin = $admin ?? \Illuminate\Support\Facades\Auth::guard('admin')->user();
     // A missing/renamed avatar must never render a broken image.
     $avatarFilename = basename((string) ($admin?->avatar ?? ''));
     $adminAvatar = \App\Support\WebsiteMedia::url('media/admin/' . $avatarFilename, 'media/admin/default.png');
+    $profileRoute = $admin ? route('backend_Admins_Edit', $admin->id) : route('backend_Admins_Index');
 @endphp
 <div class="header">
     <!-- navbar -->
@@ -97,58 +99,58 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
                         <div class="dropdown-item">
-                            <div class="d-flex">
+                            <a href="{{ $profileRoute }}" class="d-flex text-inherit text-decoration-none">
                                 <div class="avatar avatar-md avatar-indicators avatar-online">
                                     <img alt="avatar" src="{{ $adminAvatar }}"
                                         class="rounded-circle">
                                 </div>
                                 <div class="ms-3 lh-1">
-                                    <h5 class="mb-1">{{ $admin?->name ?? 'Administrator' }}</h5>
+                                    <h5 class="mb-1 text-dark">{{ $admin?->name ?? 'Administrator' }}</h5>
                                     <p class="mb-0 text-muted">{{ $admin?->email ?? '' }}</p>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="dropdown-divider"></div>
                         <ul class="list-unstyled">
                             <li class="dropdown-submenu dropstart-lg">
-                                <a class="dropdown-item dropdown-list-group-item dropdown-toggle" href="#">
+                                <a class="dropdown-item dropdown-list-group-item dropdown-toggle" href="javascript:void(0);">
                                     <i class="fe fe-circle me-2"></i> Status
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item status-select-item" href="javascript:void(0);" data-status="online">
                                             <span class="badge-dot bg-success me-2"></span> Online
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item status-select-item" href="javascript:void(0);" data-status="offline">
                                             <span class="badge-dot bg-secondary me-2"></span> Offline
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item status-select-item" href="javascript:void(0);" data-status="away">
                                             <span class="badge-dot bg-warning me-2"></span> Away
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item status-select-item" href="javascript:void(0);" data-status="busy">
                                             <span class="badge-dot bg-danger me-2"></span> Busy
                                         </a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{ $profileRoute }}">
                                     <i class="fe fe-user me-2"></i> Profile
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{ route('backend_Membership_Index') }}">
                                     <i class="fe fe-star me-2"></i> Subscription
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{ route('backend_Settings_Logo') }}">
                                     <i class="fe fe-settings me-2"></i> Settings
                                 </a>
                             </li>
@@ -166,4 +168,50 @@
             </ul>
         </div>
     </nav>
+    <script>
+        (function () {
+            var statusClasses = ['avatar-online', 'avatar-offline', 'avatar-away', 'avatar-busy'];
+
+            function applyAdminPresence(status) {
+                if (!statusClasses.includes('avatar-' + status)) {
+                    status = 'online';
+                }
+                try {
+                    localStorage.setItem('admin_presence_status', status);
+                } catch (e) {}
+
+                document.querySelectorAll('.avatar-indicators').forEach(function (avatar) {
+                    statusClasses.forEach(function (cls) {
+                        avatar.classList.remove(cls);
+                    });
+                    avatar.classList.add('avatar-' + status);
+                });
+
+                document.querySelectorAll('.status-select-item').forEach(function (item) {
+                    if (item.getAttribute('data-status') === status) {
+                        item.classList.add('active', 'fw-semibold');
+                    } else {
+                        item.classList.remove('active', 'fw-semibold');
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var currentStatus = 'online';
+                try {
+                    currentStatus = localStorage.getItem('admin_presence_status') || 'online';
+                } catch (e) {}
+                applyAdminPresence(currentStatus);
+
+                document.querySelectorAll('.status-select-item').forEach(function (elem) {
+                    elem.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var targetStatus = this.getAttribute('data-status');
+                        applyAdminPresence(targetStatus);
+                    });
+                });
+            });
+        })();
+    </script>
 </div>
