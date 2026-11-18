@@ -16,7 +16,7 @@
   .sda-hero { scroll-margin-top:90px; }
 }
 
-/* SDA Hero responsive image-first + sticky-clearance enhancement v2.1 (22 Oct 2026).
+/* SDA Hero responsive content-first + sticky-clearance enhancement v2.1 (22 Oct 2026).
    Homepage-only header clearance and hero at <=991.98px; original desktop design,
    slideshow controls, and all other homepage modules are preserved.
    Loaded after sda-homepage-final.css to prevent cascade conflicts. */
@@ -35,16 +35,16 @@
     gap:clamp(25px,5vw,36px)!important;
     align-items:stretch;
   }
-  /* Keep the artwork above the copy on compact screens. */
+  /* Keep the hero copy above the artwork on compact screens. */
   .sda-hero .sda-hero__right {
-    order:1!important;
+    order:2!important;
     width:100%;
     max-width:690px;
     margin:0 auto;
     min-width:0;
   }
   .sda-hero .sda-hero__content {
-    order:2!important;
+    order:1!important;
     width:100%;
     max-width:none;
     margin:0;
@@ -67,7 +67,7 @@
     font-size:clamp(15px,2.5vw,18px)!important;
     line-height:1.65!important;
     margin:0 0 25px!important;
-    text-align:left!important;
+    text-align:justify!important;
     text-wrap:pretty;
   }
   .sda-hero .sda-hero__actions {gap:12px;}
