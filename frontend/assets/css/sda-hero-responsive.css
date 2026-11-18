@@ -26,31 +26,29 @@
     padding:clamp(20px,3vw,34px) 0 clamp(40px,6vw,60px);
   }
   .sda-hero .sda-hero__container {
-    display:grid;
-    grid-template-columns:minmax(0,1fr);
+    display:flex!important;
+    flex-direction:column!important;
     width:calc(100% - 40px)!important;
     max-width:760px!important;
     margin-left:auto!important;
     margin-right:auto!important;
     gap:clamp(25px,5vw,36px)!important;
-    align-items:start;
+    align-items:stretch;
   }
-  /* Desired order: visual/slider FIRST, copy and CTAs SECOND on tablet/phone. */
+  /* Keep the artwork above the copy on compact screens. */
+  .sda-hero .sda-hero__right {
+    order:1!important;
+    width:100%;
+    max-width:690px;
+    margin:0 auto;
+    min-width:0;
+  }
   .sda-hero .sda-hero__content {
-    grid-column:1;
-    grid-row:2;
+    order:2!important;
     width:100%;
     max-width:none;
     margin:0;
     padding:0;
-    min-width:0;
-  }
-  .sda-hero .sda-hero__right {
-    grid-column:1;
-    grid-row:1;
-    width:100%;
-    max-width:690px;
-    margin:0 auto;
     min-width:0;
   }
   .sda-hero .sda-hero__eyebrow {
