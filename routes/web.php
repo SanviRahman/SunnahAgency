@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\HomepageTestimonialsController;
 use App\Http\Controllers\Backend\HomepageGalleryController;
 use App\Http\Controllers\Frontend\ConsultationController;
 use App\Http\Controllers\Backend\AdminBlogsController;
+use App\Http\Controllers\Backend\AdminContactController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\AdminCountryController;
 use App\Http\Controllers\Backend\AdminCourseController;
@@ -196,6 +197,9 @@ Route::group(['prefix' => 'success-story'], function () {
 #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
 Route::group(['prefix' => 'contact'], function () {
     Route::get('/', [ContactController::class, 'frontend_Contact_Index'])->name('frontend_Contact_Index');
+    Route::post('/submit', [ContactController::class, 'frontend_Contact_Store'])
+        ->middleware('throttle:5,10')
+        ->name('frontend_Contact_Store');
 });
 #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
 #=====>[AppUpNext]===>=>{ARI}===>(ContactController)==> # [{( END )}] <== FRONTEND ==>
@@ -311,6 +315,15 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/highlights', [HomepageHeroController::class, 'storeHighlight'])->name('highlights.store');
             Route::put('/highlights/{highlight}', [HomepageHeroController::class, 'updateHighlight'])->name('highlights.update');
             Route::delete('/highlights/{highlight}', [HomepageHeroController::class, 'deleteHighlight'])->name('highlights.destroy');
+        });
+
+        // Contact page content is admin-managed; public submissions are stored separately.
+        Route::prefix('contact')->name('admin.contact.')->group(function () {
+            Route::get('/', [AdminContactController::class, 'index'])->name('index');
+            Route::put('/settings', [AdminContactController::class, 'updateSettings'])->name('settings.update');
+            Route::get('/inquiries', [AdminContactController::class, 'inquiries'])->name('inquiries.index');
+            Route::get('/inquiries/{inquiry}', [AdminContactController::class, 'show'])->name('inquiries.show');
+            Route::put('/inquiries/{inquiry}', [AdminContactController::class, 'updateInquiry'])->name('inquiries.update');
         });
         #=====>[AppUpNext]=================>=>{ARI}======> # [{( = )}] ==>
         #=====>[AppUpNext]===>=>{ARI}===>(DashboardController)==> # [{( START )}] <== BACKEND ==>

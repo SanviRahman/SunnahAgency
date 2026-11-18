@@ -48,6 +48,20 @@
                 </a>
             </li>
             <li class="border nav-item">
+                <a class="nav-link text-dark {{ request()->routeIs('admin.contact.index', 'admin.contact.settings.*') ? 'active_menu' : '' }}"
+                    href="{{ route('admin.contact.index') }}">
+                    <i class="fa-regular fa-address-card me-2"></i>
+                    Contact
+                </a>
+            </li>
+            <li class="border nav-item">
+                <a class="nav-link text-dark {{ request()->routeIs('admin.contact.inquiries.*') ? 'active_menu' : '' }}"
+                    href="{{ route('admin.contact.inquiries.index') }}">
+                    <i class="fa-regular fa-envelope me-2"></i>
+                    Contact Inquiries
+                </a>
+            </li>
+            <li class="border nav-item">
                 <a class="nav-link text-dark {{ request()->routeIs(['backend_ApplyCourse_Index', 'backend_ApplyCourse_Active', 'backend_ApplyCourse_Pending', 'backend_ApplyCourse_Drafts', 'backend_ApplyCourse_Search', 'backend_ApplyCourse_Create', 'backend_ApplyCourse_Edit']) ? 'active_menu' : '' }}"
                     href="{{ route('backend_ApplyCourse_Index') }}">
                     <i class="fa-solid fa-user-gear me-2"></i>

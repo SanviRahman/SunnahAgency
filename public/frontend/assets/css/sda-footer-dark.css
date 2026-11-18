@@ -3,6 +3,7 @@
 .footer-section.sda-footer-dark {
   background:#000!important;
   background-color:#000!important;
+  border-top:4px solid #ed1c24;
   color:#dedee2;
 }
 .sda-footer-dark .footer-top,

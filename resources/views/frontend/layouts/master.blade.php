@@ -51,7 +51,7 @@
     <link rel="stylesheet" href="{{ asset('frontend') }}/assets/css/main.css">
     @stack('homepage_hero_after_main')
     {{-- Footer theme for all frontend pages; loaded after main & homepage CSS. --}}
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/sda-footer-dark.css') }}?v=1.1">
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/sda-footer-dark.css') }}?v=1.2">
     {{-- Independent dark navbar skin; no header Blade replacement needed. --}}
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/sda-navbar-dark.css') }}?v=1.0">
 </head>
