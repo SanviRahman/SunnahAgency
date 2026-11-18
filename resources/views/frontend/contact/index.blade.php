@@ -33,7 +33,7 @@
 @endphp
 
 @push('homepage_hero_after_main')
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/sda-contact.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/sda-contact.css') }}?v=1.1">
 @endpush
 
 @section('content')
